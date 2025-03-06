@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class BeerServiceImpl implements BeerService {
 
-    private Map<UUID, Beer> beerMap;
+    private final Map<UUID, Beer> beerMap;
 
     public BeerServiceImpl() {
         this.beerMap = new HashMap<>();
@@ -62,19 +62,26 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
+    public void deleteById(UUID beerId) {
+        if (beerMap.containsKey(beerId)) {
+            beerMap.remove(beerId);
+        } else {
+            throw new NoSuchElementException("🚫 Beer with id " + beerId + " not found");
+        }
+    }
+
+    @Override
     public void updateBeerById(UUID beerId, Beer beer) {
         Beer existing = beerMap.get(beerId);
-        if  (existing != null && existing.getId().equals(beerMap.get(beerId).getId())) {
+        if (existing != null) {
+            existing.setId(beerId);
             existing.setBeerName(beer.getBeerName());
-            existing.setBeerStyle(beer.getBeerStyle());
-            existing.setUpc(beer.getUpc());
             existing.setPrice(beer.getPrice());
+            existing.setUpc(beer.getUpc());
             existing.setQuantityOnHand(beer.getQuantityOnHand());
-            existing.setUpdateDate(LocalDateTime.now());
-
-            beerMap.put(existing.getId(), existing);
+            beerMap.put(beerId, beer);
         } else {
-            throw new NoSuchElementException("🚫 " + "No such beer with id: " + beerId);
+            throw new NoSuchElementException("🚫 No such Beer with id: " + beerId);
         }
     }
 
@@ -89,7 +96,7 @@ public class BeerServiceImpl implements BeerService {
             log.debug("Get Beer by Id - in service. Id: " + id.toString());
             return beerMap.get(id);
         } else {
-            throw new NoSuchElementException("Beer with id: " + id + " not found");
+            throw new NoSuchElementException("🚫 Beer with id: " + id + " not found");
         }
     }
     
@@ -106,12 +113,8 @@ public class BeerServiceImpl implements BeerService {
     			.upc(beer.getUpc())
     			.price(beer.getPrice())
     			.build();
-    	
     	beerMap.put(savedBeer.getId(), savedBeer);
-    	
     	return savedBeer;
-    	
     }
-
 
 }

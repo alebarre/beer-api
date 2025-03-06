@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import com.alebarre.models.Customer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +24,24 @@ public class BeerController {
 	
 	private final BeerService beerService;
 
-	@PutMapping("{beerId}")
-	public ResponseEntity<?> updateBeer(@PathVariable UUID beerId, @RequestBody Beer updatedBeer) {
+	@DeleteMapping("{beeId}")
+	public ResponseEntity deleteById(@PathVariable("beeId") UUID beeId) {
 		try {
-			beerService.updateBeerById(beerId, updatedBeer);
-			return ResponseEntity.ok().body("Updated: " + beerId);
-		} catch (NoSuchElementException ex) {
+			beerService.deleteById(beeId);
+
+			return ResponseEntity.ok().body("✅ Deleted: " + beeId);
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+	}
+
+	@PutMapping("{beerId}")
+	public ResponseEntity<?> updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer){
+		try {
+			beerService.updateBeerById(beerId, beer);
+
+			return ResponseEntity.ok().body("✅ Updated: " + beerId);
+		}  catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 	}
@@ -48,14 +60,9 @@ public class BeerController {
 		return beerService.listBeers();
 	}
 
-	@RequestMapping("{beerId}")
-	public ResponseEntity<String> getBeerById(@PathVariable("beerId") UUID beerId) {
-		try {
-			log.debug("Get beer by Id - In controller with id: " + beerId.toString());
-			return ResponseEntity.ok().build();
-		} catch (NoSuchElementException ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-		}
+	@RequestMapping(value = "{beerId}", method = RequestMethod.GET)
+	public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
+		return beerService.getBeerById(beerId);
 	}
 
 }

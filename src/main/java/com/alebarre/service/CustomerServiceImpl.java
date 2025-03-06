@@ -1,11 +1,7 @@
 package com.alebarre.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 
@@ -14,7 +10,7 @@ import com.alebarre.models.Customer;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 	
-	private Map<UUID, Customer> customerMap;
+	private final Map<UUID, Customer> customerMap;
 
     public CustomerServiceImpl() {
         Customer customer1 = Customer.builder()
@@ -61,6 +57,30 @@ public class CustomerServiceImpl implements CustomerService {
         customerMap.put(savedCustomer.getId(), savedCustomer);
 
         return savedCustomer;
+    }
+
+    @Override
+    public void updateCustomerById(UUID customerId, Customer customer) {
+        Customer existing = customerMap.get(customerId);
+        if (existing != null && existing.getId().equals(customerId)) {
+            existing.setName(customer.getName());
+            existing.setVersion(customer.getVersion());
+            existing.setUpdateDate(LocalDateTime.now());
+            existing.setCreatedDate(customer.getCreatedDate());
+            customerMap.put(existing.getId(), existing);
+        } else {
+            throw new NoSuchElementException("🚫 " + "No such Customer with id: " + customerId);
+        }
+    }
+
+    @Override
+    public void deleteCustomerById(UUID customerId) {
+        Customer existing = customerMap.get(customerId);
+        if (existing != null &&  existing.getId().equals(customerId)) {
+            customerMap.remove(customerId);
+        } else {
+            throw new NoSuchElementException("🚫 " + "No such Customer with id: " + customerId);
+        }
     }
 
     @Override
