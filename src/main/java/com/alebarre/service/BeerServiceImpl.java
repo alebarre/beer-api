@@ -2,11 +2,7 @@ package com.alebarre.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 
@@ -66,16 +62,35 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
+    public void updateBeerById(UUID beerId, Beer beer) {
+        Beer existing = beerMap.get(beerId);
+        if  (existing != null && existing.getId().equals(beerMap.get(beerId).getId())) {
+            existing.setBeerName(beer.getBeerName());
+            existing.setBeerStyle(beer.getBeerStyle());
+            existing.setUpc(beer.getUpc());
+            existing.setPrice(beer.getPrice());
+            existing.setQuantityOnHand(beer.getQuantityOnHand());
+            existing.setUpdateDate(LocalDateTime.now());
+
+            beerMap.put(existing.getId(), existing);
+        } else {
+            throw new NoSuchElementException("🚫 " + "No such beer with id: " + beerId);
+        }
+    }
+
+    @Override
     public List<Beer> listBeers(){
         return new ArrayList<>(beerMap.values());
     }
 
     @Override
     public Beer getBeerById(UUID id) {
-
-        log.debug("Get Beer by Id - in service. Id: " + id.toString());
-
-        return beerMap.get(id);
+        if (beerMap.containsKey(id)) {
+            log.debug("Get Beer by Id - in service. Id: " + id.toString());
+            return beerMap.get(id);
+        } else {
+            throw new NoSuchElementException("Beer with id: " + id + " not found");
+        }
     }
     
     @Override
@@ -97,4 +112,6 @@ public class BeerServiceImpl implements BeerService {
     	return savedBeer;
     	
     }
+
+
 }
