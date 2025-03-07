@@ -35,6 +35,17 @@ public class BeerController {
 		}
 	}
 
+	@PatchMapping("{beerId}")
+	public ResponseEntity<?> patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer){
+		try {
+			beerService.patchBeerById(beerId, beer);
+
+			return ResponseEntity.ok().body("✅ Updated: " + beerId);
+		}  catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+	}
+
 	@PutMapping("{beerId}")
 	public ResponseEntity<?> updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer){
 		try {

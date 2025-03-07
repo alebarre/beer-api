@@ -3,6 +3,7 @@ package com.alebarre.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.alebarre.models.Beer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,17 @@ public class CustomerController {
         headers.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
 
         return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("{customerId}")
+    public ResponseEntity<?> patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer){
+        try {
+            customerService.patchCustomerById(customerId, customer);
+
+            return ResponseEntity.ok().body("✅ Updated: " + customerId);
+        }  catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     }
 
     @PutMapping("{custumerId}")

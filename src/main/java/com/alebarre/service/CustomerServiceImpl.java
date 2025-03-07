@@ -3,9 +3,11 @@ package com.alebarre.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.alebarre.models.Beer;
 import org.springframework.stereotype.Service;
 
 import com.alebarre.models.Customer;
+import org.springframework.util.StringUtils;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -57,6 +59,22 @@ public class CustomerServiceImpl implements CustomerService {
         customerMap.put(savedCustomer.getId(), savedCustomer);
 
         return savedCustomer;
+    }
+
+    @Override
+    public void patchCustomerById(UUID customerId, Customer customer) {
+        Customer existingCustomer = customerMap.get(customerId);
+        if (existingCustomer != null && existingCustomer.getId() != customerId) {
+            if (StringUtils.hasText(customer.getName())) {
+                existingCustomer.setName (customer.getName());
+            }
+            if (customer.getVersion() != existingCustomer.getVersion()) {
+                existingCustomer.setVersion(customer.getVersion());
+            }
+            existingCustomer.setUpdateDate(LocalDateTime.now());
+        } else {
+            throw new NoSuchElementException("🚫 No such Customer with id: " + customerId);
+        }
     }
 
     @Override
