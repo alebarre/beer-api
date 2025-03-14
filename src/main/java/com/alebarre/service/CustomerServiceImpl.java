@@ -1,13 +1,18 @@
 package com.alebarre.service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 
-import com.alebarre.models.Beer;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.alebarre.models.Customer;
-import org.springframework.util.StringUtils;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {

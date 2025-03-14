@@ -30,9 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.alebarre.models.Beer;
 import com.alebarre.models.Customer;
-import com.alebarre.service.BeerServiceImpl;
 import com.alebarre.service.CustomerService;
 import com.alebarre.service.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
