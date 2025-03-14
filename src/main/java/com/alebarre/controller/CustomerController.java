@@ -3,6 +3,7 @@ package com.alebarre.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.alebarre.exceptions.NotFoundException;
 import com.alebarre.models.Beer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -74,7 +75,7 @@ public class CustomerController {
 
     @GetMapping(CUSTOMER_PATH_ID)
     public Customer getCustomerById(@PathVariable("customerId") UUID id) {
-        return customerService.getCustomerById(id);
+        return customerService.getCustomerById(id).orElseThrow(NotFoundException::new);
     }
 
 }

@@ -118,10 +118,10 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public Beer getBeerById(UUID id) {
+    public Optional<Beer> getBeerById(UUID id) {
         if (beerMap.containsKey(id)) {
             log.debug("Get Beer by Id - in service. Id: " + id.toString());
-            return beerMap.get(id);
+            return Optional.of(beerMap.get(id));
         } else {
             throw new NoSuchElementException("🚫 Beer with id: " + id + " not found");
         }
